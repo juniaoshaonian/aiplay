@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package llm.v1;
+
+option go_package = "llm/v1;llm";
+
+// 对应 Msg 结构体
+message Msg {
+  string type = 1;
+  string content = 2;
+}
+
+// 对应 Request 结构体
+message Request {
+  repeated Msg messages = 1;
+  string model = 2;
+  string token = 3;
+}
+
+// 对应 StreamEvent 结构体
+message StreamEvent {
+  string error = 1;         // 错误信息（简化处理）
+  string type = 2;          // 事件类型
+  string content = 3;       // 响应内容
+  string reasoning_content = 4; // 推理内容
+}
+
+// 定义 gRPC 服务
+service LLMService {
+  // 服务端流式 RPC
+  rpc Stream(Request) returns (stream StreamEvent);
+}
